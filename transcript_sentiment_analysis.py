@@ -369,22 +369,44 @@ fig.show()
 # Step 4: 感情分布の可視化（円グラフ - 全体）
 emotion_counts = emotion_df['emotion'].value_counts()
 
-# 感情ラベルと色のマッピング
-emotion_colors = {
+# 感情ラベルと色の直接マッピング
+emotion_color_map = {
     'ポジティブ': '#00CC96',  # 緑
-    'ネガティブ': '#EF553B',  # 赤
-    '中立': '#636EFA'         # 青
+    '中立': '#636EFA',         # 青
+    'ネガティブ': '#EF553B'    # 赤
 }
 
-# 感情ラベルに対応する色リストを生成
-colors = [emotion_colors.get(label, '#636EFA') for label in emotion_counts.index]
+# 順序を固定（ポジティブ、中立、ネガティブ）
+emotion_order = ['ポジティブ', '中立', 'ネガティブ']
+
+# 順序に従ってデータを整理
+labels = []
+values = []
+colors = []
+
+for emotion in emotion_order:
+    if emotion in emotion_counts.index:
+        labels.append(emotion)
+        values.append(emotion_counts[emotion])
+        colors.append(emotion_color_map[emotion])
+
+# デバッグ出力
+print("=== 円グラフデータ確認 ===")
+for i, label in enumerate(labels):
+    print(f"{label}: {values[i]}件, 色: {colors[i]}")
+print("=" * 40)
 
 fig2 = go.Figure(data=[go.Pie(
-    labels=emotion_counts.index,
-    values=emotion_counts.values,
+    labels=labels,
+    values=values,
     hole=0.3,
-    marker=dict(colors=colors)
+    textposition='inside',
+    textinfo='label+percent',
+    sort=False  # ソートを無効化
 )])
+
+# update_tracesで色を指定
+fig2.update_traces(marker=dict(colors=colors))
 
 fig2.update_layout(
     title='感情分布（全体）',
@@ -402,12 +424,15 @@ from plotly.subplots import make_subplots
 speakers = emotion_df['speaker'].unique()
 n_speakers = len(speakers)
 
-# 感情ラベルと色のマッピング
-emotion_colors = {
+# 感情ラベルと色の直接マッピング
+emotion_color_map = {
     'ポジティブ': '#00CC96',  # 緑
-    'ネガティブ': '#EF553B',  # 赤
-    '中立': '#636EFA'         # 青
+    '中立': '#636EFA',         # 青
+    'ネガティブ': '#EF553B'    # 赤
 }
+
+# 順序を固定（ポジティブ、中立、ネガティブ）
+emotion_order = ['ポジティブ', '中立', 'ネガティブ']
 
 # サブプロットの行列数を計算
 cols = min(3, n_speakers)
@@ -427,15 +452,27 @@ for i, speaker in enumerate(speakers):
     row = i // cols + 1
     col = i % cols + 1
 
-    # 感情ラベルに対応する色リストを生成
-    colors = [emotion_colors.get(label, '#636EFA') for label in emotion_counts_speaker.index]
+    # 順序に従ってデータを整理
+    labels = []
+    values = []
+    colors = []
+
+    for emotion in emotion_order:
+        if emotion in emotion_counts_speaker.index:
+            labels.append(emotion)
+            values.append(emotion_counts_speaker[emotion])
+            colors.append(emotion_color_map[emotion])
 
     fig2_speaker.add_trace(
         go.Pie(
-            labels=emotion_counts_speaker.index,
-            values=emotion_counts_speaker.values,
+            labels=labels,
+            values=values,
             hole=0.3,
-            marker=dict(colors=colors)
+            sort=False,  # ソートを無効化
+            marker=dict(colors=colors),
+            textposition='inside',
+            textinfo='label+percent',
+            showlegend=False  # 凡例を無効化
         ),
         row=row,
         col=col
@@ -445,7 +482,7 @@ fig2_speaker.update_layout(
     title_text='感情分布（発話者別）',
     template='plotly_white',
     height=400 * rows,
-    showlegend=True
+    showlegend=False  # 全体の凡例も無効化
 )
 
 fig2_speaker.show()
