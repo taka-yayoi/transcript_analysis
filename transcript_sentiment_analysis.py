@@ -369,11 +369,21 @@ fig.show()
 # Step 4: 感情分布の可視化（円グラフ - 全体）
 emotion_counts = emotion_df['emotion'].value_counts()
 
+# 感情ラベルと色のマッピング
+emotion_colors = {
+    'ポジティブ': '#00CC96',  # 緑
+    'ネガティブ': '#EF553B',  # 赤
+    '中立': '#636EFA'         # 青
+}
+
+# 感情ラベルに対応する色リストを生成
+colors = [emotion_colors.get(label, '#636EFA') for label in emotion_counts.index]
+
 fig2 = go.Figure(data=[go.Pie(
     labels=emotion_counts.index,
     values=emotion_counts.values,
     hole=0.3,
-    marker=dict(colors=['#00CC96', '#EF553B', '#636EFA'])
+    marker=dict(colors=colors)
 )])
 
 fig2.update_layout(
@@ -391,6 +401,13 @@ from plotly.subplots import make_subplots
 
 speakers = emotion_df['speaker'].unique()
 n_speakers = len(speakers)
+
+# 感情ラベルと色のマッピング
+emotion_colors = {
+    'ポジティブ': '#00CC96',  # 緑
+    'ネガティブ': '#EF553B',  # 赤
+    '中立': '#636EFA'         # 青
+}
 
 # サブプロットの行列数を計算
 cols = min(3, n_speakers)
@@ -410,12 +427,15 @@ for i, speaker in enumerate(speakers):
     row = i // cols + 1
     col = i % cols + 1
 
+    # 感情ラベルに対応する色リストを生成
+    colors = [emotion_colors.get(label, '#636EFA') for label in emotion_counts_speaker.index]
+
     fig2_speaker.add_trace(
         go.Pie(
             labels=emotion_counts_speaker.index,
             values=emotion_counts_speaker.values,
             hole=0.3,
-            marker=dict(colors=['#00CC96', '#EF553B', '#636EFA'])
+            marker=dict(colors=colors)
         ),
         row=row,
         col=col
