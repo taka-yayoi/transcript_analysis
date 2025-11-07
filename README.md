@@ -42,6 +42,18 @@ Volumeにファイルをアップロード: `/Volumes/takaakiyayoi_catalog/movie
 本日のアジェンダは3つあります。
 ```
 
+#### サンプルファイル
+
+リポジトリには`transcript_sample.txt`というサンプルファイルが含まれています。
+このファイルを使って、すぐに分析を試すことができます。
+
+サンプルファイルのアップロード方法:
+1. Databricks UIで Catalog → Volumes を開く
+2. 対象のVolume（`/Volumes/takaakiyayoi_catalog/movie_analysis/movie_data/`）を開く
+3. 「Upload Files」をクリック
+4. `transcript_sample.txt`をアップロード
+5. ノートブックのウィジェットで`transcript_sample.txt`を指定
+
 #### フォーマット仕様
 
 - **タイムスタンプ行**: `[発話者名] HH:MM:SS`
